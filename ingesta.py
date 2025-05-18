@@ -16,27 +16,29 @@ MYSQL_CONFIG = {
 # Consulta que quieres ejecutar
 SQL_QUERY = "SELECT * FROM 	employees"
 
-# Nombre del archivo CSV
-CSV_FILENAME = "data.csv"
+# Archivo CSV local
+ficheroUpload = "data.csv"
 
-# Datos de S3
-BUCKET_NAME = "gcr-output-01"
-S3_KEY = CSV_FILENAME  # nombre del archivo en S3
+# Nombre del bucket S3
+nombreBucket = "gcr-output-01"
 
-# --- CONEXIÓN A MySQL Y EXPORTACIÓN ---
+# --- CONEXIÓN A MYSQL Y EXPORTACIÓN A CSV ---
 
-# Conexión a la base de datos
-connection = pymysql.connect(**MYSQL_CONFIG)
-df = pd.read_sql(SQL_QUERY, connection)
-connection.close()
-
-# Guardar como CSV
-df.to_csv(CSV_FILENAME, index=False)
-print(f"{CSV_FILENAME} generado con éxito.")
+try:
+    connection = pymysql.connect(**MYSQL_CONFIG)
+    df = pd.read_sql(SQL_QUERY, connection)
+    df.to_csv(ficheroUpload, index=False)
+    print(f"{ficheroUpload} generado con éxito.")
+except Exception as e:
+    print("Error al consultar MySQL o guardar CSV:", e)
+finally:
+    connection.close()
 
 # --- SUBIDA A S3 ---
 
-s3 = boto3.client('s3')
-s3.upload_file(CSV_FILENAME, BUCKET_NAME, S3_KEY)
-
-print("Ingesta completada")
+try:
+    s3 = boto3.client('s3')
+    s3.upload_file(ficheroUpload, nombreBucket, ficheroUpload)
+    print("Ingesta completada en S3")
+except Exception as e:
+    print("Error al subir a S3:", e)
