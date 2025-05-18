@@ -10,7 +10,7 @@ MYSQL_CONFIG = {
     'user': 'root',
     'password': 'admin',
     'database': 'bd_api_employees',
-    'port': 3306  # cambia si tu puerto es distinto
+    'port': 8005  # cambia si tu puerto es distinto
 }
 
 # Consulta que quieres ejecutar
