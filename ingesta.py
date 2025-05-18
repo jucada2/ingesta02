@@ -4,7 +4,6 @@ import boto3
 
 # --- CONFIGURACIÓN ---
 
-# Datos de conexión a MySQL
 MYSQL_CONFIG = {
     'host': '172.31.95.13',
     'user': 'root',
@@ -13,16 +12,14 @@ MYSQL_CONFIG = {
     'port': 8005  # cambia si tu puerto es distinto
 }
 
-# Consulta que quieres ejecutar
-SQL_QUERY = "SELECT * FROM 	employees"
-
-# Archivo CSV local
+SQL_QUERY = "SELECT * FROM employees"
 ficheroUpload = "data.csv"
-
-# Nombre del bucket S3
 nombreBucket = "jucada-output-2"
 
+
 # --- CONEXIÓN A MYSQL Y EXPORTACIÓN A CSV ---
+
+connection = None  # Asegura que esté definida
 
 try:
     connection = pymysql.connect(**MYSQL_CONFIG)
@@ -32,10 +29,10 @@ try:
 except Exception as e:
     print("Error al consultar MySQL o guardar CSV:", e)
 finally:
-    connection.close()
+    if connection:
+        connection.close()
 
-# --- SUBIDA A S3 ---
-
+# SUBIR A S3
 try:
     s3 = boto3.client('s3')
     s3.upload_file(ficheroUpload, nombreBucket, ficheroUpload)
