@@ -20,7 +20,7 @@ SQL_QUERY = "SELECT * FROM 	employees"
 ficheroUpload = "data.csv"
 
 # Nombre del bucket S3
-nombreBucket = "gcr-output-01"
+nombreBucket = "jucada-output-2"
 
 # --- CONEXIÓN A MYSQL Y EXPORTACIÓN A CSV ---
 
